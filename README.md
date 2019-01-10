@@ -1,10 +1,10 @@
 # Newyork-Times-Datacollect
-Collect articles from NYtimes through [NYTimes api]("https://developer.nytimes.com/")
+Collect articles from NYtimes through [NYTimes api](https://developer.nytimes.com/)
 
 ## Requirements:
-- [Python 3.6]("https://www.python.org/downloads/release/python-360/")
-- [Beautiful Soup 4]("https://www.crummy.com/software/BeautifulSoup/")
-- [Requests]("http://docs.python-requests.org/en/master/")
+- [Python 3.6](https://www.python.org/downloads/release/python-360/)
+- [Beautiful Soup 4](https://www.crummy.com/software/BeautifulSoup/)
+- [Requests](http://docs.python-requests.org/en/master/)
 
 ## Usage
 
