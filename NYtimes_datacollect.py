@@ -78,26 +78,25 @@ def searchNYTimes(api_key='', query='', fq='',
     # hardcoded link to article search api json object
     api_search_url= 'https://api.nytimes.com/svc/search/v2/articlesearch.json'
 
-    if len(query) < 1:
-        print('Query string is empty')
+    assert len(query) > 0, 'Query string is empty'
     
     fl_items = ['web_url',
-    'snippet',
-    'lead_paragraph',
-    'abstract',
-    'print_page',
-    'blog',
-    'source',
-    'multimedia',
-    'headline',
-    'keywords',
-    'pub_date',
-    'document_type',
-    'news_desk',
-    'byline',
-    'type_of_material',
-    '_id',
-    'word_count']
+        'snippet',
+        'lead_paragraph',
+        'abstract',
+        'print_page',
+        'blog',
+        'source',
+        'multimedia',
+        'headline',
+        'keywords',
+        'pub_date',
+        'document_type',
+        'news_desk',
+        'byline',
+        'type_of_material',
+        '_id',
+        'word_count']
     
     search_param={'api-key':api_key,
                   'q':query }
@@ -126,14 +125,10 @@ def searchNYTimes(api_key='', query='', fq='',
                 search_param['end_date'] = end_date
     
     if page >= 0:
-#        print('page is {}'.format(page))
         search_param['page'] = page
     
     try:
-#        print('search params: {}'.format(search_param))
         resp = requests.get(url=api_search_url,params=search_param)
-#         print(resp.text)
-#         print(resp.status_code)
         response_json = resp.json()
         resp.close()
     except Exception as e:
@@ -181,7 +176,6 @@ class NYTapiResponseWrapper:
         self.docs = []
         i = 0
         for doc_item in docs:
-#            print(i)
             i += 1
             self.docs.append(Doc(doc = doc_item))
         
@@ -250,7 +244,6 @@ def getArticlesInMass(api_key='', query='', fq='',
         resp_ob = NYTapiResponseWrapper(resp)
         if len(resp_ob.docs) <= 0 : 
             break
-#         print(resp_ob._meta['offset'])
         for doc_item in resp_ob.docs:
             article = {'id':doc_item._id,'headline':doc_item.headline['main'], 'url':doc_item.web_url, 'downloaded':'N'}
             article_list.append(article)
@@ -285,7 +278,7 @@ def groupByCategories(article_list=[]):
         url = article['url']
         # split the url into 3 parts
         # eg. 1(https://www.nytimes.com/2018/05/04/) 2(movies) 3(/sandra-bullock-mindy-kaling-oceans-8.html)
-        reg_ex = "([a-zA-Z0-9\.\-_/:]*/[0-9]{4}/[0-9]{2}/[0-9]{2}/)([a-zA-Z0-9]+)(/[a-zA-Z\-\.]*)"
+        reg_ex = r"([a-zA-Z0-9\.\-_/:]*/[0-9]{4}/[0-9]{2}/[0-9]{2}/)([a-zA-Z0-9]+)(/[a-zA-Z\-\.]*)"
         category = re.split(reg_ex, url)[2]
         if not category in groupedArticles:
             groupedArticles[category] = [article]
@@ -305,8 +298,8 @@ def getArticleListByCategory(category='business', api_key='', begin_date='YYYYMM
 def downloadAllArticles(article_list, grouped=False, parentDirectory='./data/NYT-articles/'):
     
     """
-    Download all the articles in the List
-    
+    Download all the articles in the article list/dict to a individual article file.
+        
     Parameters
     ----------
     article_list : list/dict
@@ -347,7 +340,6 @@ def _downloadArticles(article_list=[], directory='./'):
     articles_written = 0
     for article in article_list:
         article_soup = getPageByURL(URL = article['url']) 
-#         print(article['id'], article['url'])
         paras = article_soup.find_all('p')
         article_text = ''
         for para in paras:
